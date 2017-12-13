@@ -40,3 +40,6 @@ Thumbs.db
 *.prefs
 *.MF
 *.springBeans
+**/target
+**/.mvn
+**/.settings
