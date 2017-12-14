@@ -17,7 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  */
 @EnableWebSecurity
 @Configuration
-public class BookServiceSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	/**
 	 * Right now the security semantics are very simple: 
 	 * 1. Anyone can read resources
