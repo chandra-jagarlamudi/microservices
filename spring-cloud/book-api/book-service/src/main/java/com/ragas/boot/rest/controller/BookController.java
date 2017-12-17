@@ -4,6 +4,7 @@
 package com.ragas.boot.rest.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +25,7 @@ import com.ragas.boot.rest.service.BookService;
  *
  */
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/bookservice/books")
 public class BookController {
 	@Autowired
 	private BookService bookService;

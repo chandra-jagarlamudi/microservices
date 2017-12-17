@@ -26,7 +26,7 @@ import com.ragas.boot.rest.service.RatingService;
  *
  */
 @RestController
-@RequestMapping("/ratings")
+@RequestMapping("/ratingservice/ratings")
 public class RatingController {
 	@Autowired
 	private RatingService ratingService;
