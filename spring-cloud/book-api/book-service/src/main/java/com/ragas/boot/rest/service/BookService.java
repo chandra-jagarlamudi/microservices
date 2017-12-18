@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.ragas.boot.rest.domain.Book;
+import com.ragas.boot.rest.persistence.model.Book;
 
 /**
  * @author Chandra Jagarlamudis

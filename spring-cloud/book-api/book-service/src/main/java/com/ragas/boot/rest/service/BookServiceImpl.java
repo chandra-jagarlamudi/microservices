@@ -3,13 +3,19 @@
  */
 package com.ragas.boot.rest.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.ragas.boot.rest.domain.Book;
+import com.google.common.base.Preconditions;
+import com.ragas.boot.rest.exception.BookNotFoundException;
+import com.ragas.boot.rest.persistence.dao.BookRepository;
+import com.ragas.boot.rest.persistence.model.Book;
 
 /**
  * @author Chandra Jagarlamudi
@@ -17,45 +23,59 @@ import com.ragas.boot.rest.domain.Book;
  */
 @Component
 public class BookServiceImpl implements BookService {
-	
-	List<Book> booksList = createBooks();
+
+	@Autowired
+	private BookRepository bookRepository;
 
 	@Override
 	public List<Book> findAllBooks() {
-		return booksList;
+		return (List<Book>) bookRepository.findAll();
 	}
 
 	@Override
-	public Book findBookById(Long bookId) {
-		return null;
+	public Book findBookById(final Long bookId) {
+		return Optional.ofNullable(bookRepository.findOne(bookId))
+				.orElseThrow(() -> new BookNotFoundException("Book not found. ID: " + bookId));
 	}
 
 	@Override
-	public Book createBook(Book book) {
-		booksList.add(book);
-		return book;
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Book createBook(final Book book) {
+		final Book newBook = new Book();
+		newBook.setTitle(book.getTitle());
+		newBook.setAuthor(book.getAuthor());
+		return bookRepository.save(newBook);
 	}
 
 	@Override
-	public void deleteBook(Long bookId) {
-
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void deleteBook(final Long bookId) {
+		bookRepository.delete(bookId);
 	}
 
 	@Override
-	public Book updateBook(Book book, Long bookId) {
-		return book;
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Book updateBook(final Map<String, String> updates, final Long bookId) {
+		final Book book = findBookById(bookId);
+		updates.keySet().forEach(key -> {
+			switch (key) {
+			case "author":
+				book.setAuthor(updates.get(key));
+				break;
+			case "title":
+				book.setTitle(updates.get(key));
+			}
+		});
+		return bookRepository.save(book);
 	}
 
 	@Override
-	public Book updateBook(Map<String, String> updates, Long bookId) {
-		return null;
-	}
-	
-	private List<Book> createBooks(){
-		List<Book> booksList = new ArrayList<>();
-		booksList.add(new Book(new Long("1"), "Paramahansa Yogananda", "Autobiography of a Yogi"));
-		booksList.add(new Book(new Long("2"), "Robert T. Kiyosaki", "Rich Dad, Poor Dad"));
-		return booksList;
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Book updateBook(final Book book, final Long bookId) {
+		Preconditions.checkNotNull(book);
+		Preconditions.checkState(book.getId() == bookId);
+		Preconditions.checkNotNull(bookRepository.findOne(bookId));
+		return bookRepository.save(book);
 	}
 
 }

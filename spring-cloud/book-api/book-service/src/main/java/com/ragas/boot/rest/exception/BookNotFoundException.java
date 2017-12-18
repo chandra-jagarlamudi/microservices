@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class BookNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = -2712722309091827178L;
 
-	BookNotFoundException(String message) {
+	public BookNotFoundException(final String message) {
 		super(message);
 	}
 
