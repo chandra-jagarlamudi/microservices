@@ -41,10 +41,7 @@ public class BookServiceImpl implements BookService {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public Book createBook(final Book book) {
-		final Book newBook = new Book();
-		newBook.setTitle(book.getTitle());
-		newBook.setAuthor(book.getAuthor());
-		return bookRepository.save(newBook);
+		return bookRepository.save(book);
 	}
 
 	@Override

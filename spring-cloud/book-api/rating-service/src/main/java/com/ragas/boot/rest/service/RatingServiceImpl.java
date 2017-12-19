@@ -3,13 +3,19 @@
  */
 package com.ragas.boot.rest.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.ragas.boot.rest.domain.Rating;
+import com.google.common.base.Preconditions;
+import com.ragas.boot.rest.exception.RatingNotFoundException;
+import com.ragas.boot.rest.persistance.dao.RatingRepository;
+import com.ragas.boot.rest.persistance.model.Rating;
 
 /**
  * @author Chandra Jagarlamudi
@@ -17,42 +23,59 @@ import com.ragas.boot.rest.domain.Rating;
  */
 @Component
 public class RatingServiceImpl implements RatingService {
-	
-	List<Rating> ratingLists = createRatings();
+
+	@Autowired
+	private RatingRepository ratingRepository;
+
+	@Override
+	public List<Rating> findRatingsByBookId(Long bookId) {
+		return ratingRepository.findRatingsByBookId(bookId);
+	}
 
 	@Override
 	public List<Rating> findAllRatings() {
-		return ratingLists;
+		return (List<Rating>) ratingRepository.findAll();
 	}
 
-	@Override
-	public List<Rating> findRatingsByBookId(long bookId) {
-		return null;
+	public Rating findRatingById(Long ratingId) {
+		return Optional.ofNullable(ratingRepository.findOne(ratingId))
+				.orElseThrow(() -> new RatingNotFoundException("Rating not found. ID: " + ratingId));
 	}
 
+
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Rating createRating(Rating rating) {
-		return null;
+		return ratingRepository.save(rating);
 	}
 
 	@Override
-	public void deleteRating(long ratingId) {
-		
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void deleteRating(Long ratingId) {
+		ratingRepository.delete(ratingId);
 	}
 
 	@Override
-	public Rating updateRating(Rating rating, long ratingId) {
-		return null;
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Rating updateRating(Map<String, String> updates, Long ratingId) {
+		final Rating rating = findRatingById(ratingId);
+		updates.keySet().forEach(key -> {
+			switch (key) {
+			case "stars":
+				rating.setStars(Integer.parseInt(updates.get(key)));
+				break;
+			}
+		});
+		return ratingRepository.save(rating);
 	}
 
 	@Override
-	public Rating updateRating(Map<String, String> updates, long ratingId) {
-		return null;
-	}
-	
-	private List<Rating> createRatings(){
-		List<Rating> ratingsList = new ArrayList<Rating>();
-		return ratingsList;
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Rating updateRating(Rating rating, Long ratingId) {
+		Preconditions.checkNotNull(rating);
+		Preconditions.checkState(rating.getId() == ratingId);
+		Preconditions.checkNotNull(ratingRepository.findOne(ratingId));
+		return ratingRepository.save(rating);
 	}
 
 }

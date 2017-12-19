@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ragas.boot.rest.domain.Rating;
+import com.ragas.boot.rest.persistance.model.Rating;
 import com.ragas.boot.rest.service.RatingService;
 
 /**

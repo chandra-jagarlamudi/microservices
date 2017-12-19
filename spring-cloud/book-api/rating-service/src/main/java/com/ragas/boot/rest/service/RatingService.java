@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.ragas.boot.rest.domain.Rating;
+import com.ragas.boot.rest.persistance.model.Rating;
 
 /**
  * @author Chandra Jagarlamudi
@@ -19,14 +19,14 @@ public interface RatingService {
 
 	List<Rating> findAllRatings();
 
-	List<Rating> findRatingsByBookId(long bookId);
+	List<Rating> findRatingsByBookId(Long bookId);
 
 	Rating createRating(Rating rating);
 
-	void deleteRating(long ratingId);
+	void deleteRating(Long ratingId);
 
-	Rating updateRating(Rating rating, long ratingId);
+	Rating updateRating(Rating rating, Long ratingId);
 
-	Rating updateRating(Map<String, String> updates, long ratingId);
+	Rating updateRating(Map<String, String> updates, Long ratingId);
 
 }
