@@ -70,6 +70,7 @@
 		<module>config-server</module>
 		<module>currency-conversion-service</module>
 		<module>currency-exchange-service</module>
+		<module>naming-server</module>
 	</modules>
 
 	<build>
