@@ -71,6 +71,7 @@
 		<module>currency-conversion-service</module>
 		<module>currency-exchange-service</module>
 		<module>naming-server</module>
+		<module>gateway-server</module>
 	</modules>
 
 	<build>
