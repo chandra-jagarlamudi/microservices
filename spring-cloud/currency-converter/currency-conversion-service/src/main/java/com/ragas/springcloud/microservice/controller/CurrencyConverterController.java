@@ -28,7 +28,6 @@ public class CurrencyConverterController {
 	@GetMapping("/currency-converter/from/{from}/to/{to}/quantity/{quantity}")
 	public CurrencyConverter convertCurrency(@PathVariable String from, @PathVariable String to,
 			@PathVariable BigDecimal quantity) {
-
 		/**
 		 * START - CALLING OTHER MICROSERVICE, We are calling currency-exchange-service
 		 * 
@@ -46,12 +45,13 @@ public class CurrencyConverterController {
 				quantity.multiply(response.getConversionMultiple()), response.getPort());
 	}
 
+	/**
+	 * Feign way of calling other microservices
+	 */
 	@GetMapping("/currency-converter-feign/from/{from}/to/{to}/quantity/{quantity}")
 	public CurrencyConverter convertCurrencyFeign(@PathVariable String from, @PathVariable String to,
 			@PathVariable BigDecimal quantity) {
-
 		CurrencyConverter response = proxy.retrieveExchangeValue(from, to);
-
 		return new CurrencyConverter(response.getId(), from, to, response.getConversionMultiple(), quantity,
 				quantity.multiply(response.getConversionMultiple()), response.getPort());
 	}
