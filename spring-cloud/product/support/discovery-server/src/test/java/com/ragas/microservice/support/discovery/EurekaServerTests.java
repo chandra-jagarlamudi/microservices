@@ -19,7 +19,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @SpringBootConfiguration
 @WebAppConfiguration
 @Ignore
-public class EurekaApplicationTests {
+public class EurekaServerTests {
 
 	@Value("${local.server.port}")
 	private int port = 0;

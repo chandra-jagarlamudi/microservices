@@ -8,8 +8,8 @@ import org.springframework.stereotype.Controller;
 @SpringBootApplication
 @Controller
 @EnableZuulProxy
-public class ZuulApplication {
+public class ZuulServer {
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(ZuulApplication.class).web(true).run(args);
+		new SpringApplicationBuilder(ZuulServer.class).web(true).run(args);
 	}
 }

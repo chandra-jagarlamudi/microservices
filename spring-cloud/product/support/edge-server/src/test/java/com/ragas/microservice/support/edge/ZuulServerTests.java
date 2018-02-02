@@ -1,4 +1,4 @@
-package com.ragas.microservice.core.recommendation;
+package com.ragas.microservice.support.edge;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RecommendationServiceApplicationTests {
+public class ZuulServerTests {
 
 	@Test
 	public void contextLoads() {

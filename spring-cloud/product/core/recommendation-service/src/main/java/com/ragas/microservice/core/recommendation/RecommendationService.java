@@ -6,8 +6,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class RecommendationServiceApplication {
+public class RecommendationService {
 	public static void main(String[] args) {
-		SpringApplication.run(RecommendationServiceApplication.class, args);
+		SpringApplication.run(RecommendationService.class, args);
 	}
 }
