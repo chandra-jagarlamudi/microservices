@@ -21,6 +21,10 @@ public class ProductAggregated {
     private List<RecommendationSummary> recommendations;
     private List<ReviewSummary> reviews;
     
+    public ProductAggregated() {
+    	
+    }
+    
     public ProductAggregated(Product product, List<Recommendation> recommendations, List<Review> reviews) {
 
         // 1. Setup product info

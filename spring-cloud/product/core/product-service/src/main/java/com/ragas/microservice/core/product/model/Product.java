@@ -17,7 +17,10 @@ public class Product {
 	public Product() {
 	}
 
-	public Product(int productId, String string, int i) {
+	public Product(int productId, String name, int weight) {
+		this.productId = productId;
+		this.name = name;
+		this.weight = weight;
 	}
 
 	public int getProductId() {
