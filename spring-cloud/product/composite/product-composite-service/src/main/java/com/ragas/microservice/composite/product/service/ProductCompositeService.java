@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.ragas.microservice.composite.product.service;
 
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class ProductCompositeService {
 	private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeService.class);
 
 	@Autowired
-	ProductCompositeIntegration integration;
+	ProductCompositeIntegration productCompositeIntegration;
 
 	@Autowired
 	Util util;
@@ -45,7 +42,7 @@ public class ProductCompositeService {
 	public ResponseEntity<ProductAggregated> getProduct(@PathVariable int productId) {
 		try {
 			// 1. First get mandatory product information
-			ResponseEntity<Product> productResult = integration.getProduct(productId);
+			ResponseEntity<Product> productResult = productCompositeIntegration.getProduct(productId);
 
 			if (!productResult.getStatusCode().is2xxSuccessful()) {
 				// We can't proceed, return whatever fault we got from the getProduct call
@@ -53,7 +50,7 @@ public class ProductCompositeService {
 			}
 
 			// 2. Get optional recommendations
-			ResponseEntity<List<Recommendation>> recommendationResult = integration.getRecommendations(productId);
+			ResponseEntity<List<Recommendation>> recommendationResult = productCompositeIntegration.getRecommendations(productId);
 			List<Recommendation> recommendations = new ArrayList<Recommendation>();
 			if (!recommendationResult.getStatusCode().is2xxSuccessful()) {
 				// Something went wrong with getRecommendations, simply skip the
@@ -64,7 +61,7 @@ public class ProductCompositeService {
 			}
 
 			// 3. Get optional reviews
-			ResponseEntity<List<Review>> reviewsResult = integration.getReviews(productId);
+			ResponseEntity<List<Review>> reviewsResult = productCompositeIntegration.getReviews(productId);
 			List<Review> reviews = new ArrayList<Review>();
 			if (!reviewsResult.getStatusCode().is2xxSuccessful()) {
 				// Something went wrong with getReviews, simply skip the review-information in

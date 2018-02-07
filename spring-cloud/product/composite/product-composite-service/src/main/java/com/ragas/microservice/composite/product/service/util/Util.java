@@ -43,7 +43,6 @@ public class Util {
 	            uri = URI.create(fallbackUri);
 	            LOG.warn("Failed to resolve serviceId '{}'. Fallback to URL '{}'.", serviceId, uri);
 	        }
-
 	        return uri;
 	    }
 
@@ -55,3 +54,4 @@ public class Util {
 	        return new ResponseEntity<>(body, httpStatus);
 	    }
 }
+

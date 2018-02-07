@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.ragas.microservice.composite.product.model;
 
 import java.util.List;
@@ -21,12 +18,7 @@ public class ProductAggregated {
     private List<RecommendationSummary> recommendations;
     private List<ReviewSummary> reviews;
     
-    public ProductAggregated() {
-    	
-    }
-    
     public ProductAggregated(Product product, List<Recommendation> recommendations, List<Review> reviews) {
-
         // 1. Setup product info
         this.productId = product.getProductId();
         this.name = product.getName();
@@ -48,21 +40,19 @@ public class ProductAggregated {
 	public int getProductId() {
 		return productId;
 	}
-
 	public String getName() {
 		return name;
 	}
-
 	public int getWeight() {
 		return weight;
 	}
-
 	public List<RecommendationSummary> getRecommendations() {
 		return recommendations;
 	}
-
 	public List<ReviewSummary> getReviews() {
 		return reviews;
-	}  
+	}
     
+    
+
 }

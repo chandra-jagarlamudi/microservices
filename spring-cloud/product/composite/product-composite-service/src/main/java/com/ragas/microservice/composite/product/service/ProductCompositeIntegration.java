@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.ragas.microservice.composite.product.service;
 
 import java.io.IOException;
@@ -16,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.ragas.microservice.composite.product.service.util.Util;
 import com.ragas.microservice.core.product.model.Product;
 import com.ragas.microservice.core.recommendation.model.Recommendation;
@@ -104,28 +100,10 @@ public class ProductCompositeIntegration {
 	// ----- //
 	// UTILS //
 	// ----- //
-
-	private ObjectReader productReader = null;
-
-	private ObjectReader getProductReader() {
-		if (productReader != null)
-			return productReader;
-		ObjectMapper mapper = new ObjectMapper();
-		return productReader = mapper.reader(Product.class);
-	}
-
-	private ObjectReader reviewsReader = null;
-
-	private ObjectReader getReviewsReader() {
-		if (reviewsReader != null)
-			return reviewsReader;
-		ObjectMapper mapper = new ObjectMapper();
-		return reviewsReader = mapper.reader(new TypeReference<List<Review>>() {});
-	}
-
-	public Product response2Product(ResponseEntity<String> response) {
+	private Product response2Product(ResponseEntity<String> response) {
 		try {
-			return getProductReader().readValue(response.getBody());
+			ObjectMapper mapper = new ObjectMapper();
+			return mapper.readValue(response.getBody(), Product.class);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -134,14 +112,10 @@ public class ProductCompositeIntegration {
 	private List<Recommendation> response2Recommendations(ResponseEntity<String> response) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			List list = mapper.readValue(response.getBody(), new TypeReference<List<Recommendation>>() {});
-			List<Recommendation> recommendations = list;
-			return recommendations;
-
+			return mapper.readValue(response.getBody(), new TypeReference<List<Recommendation>>() {});
 		} catch (IOException e) {
 			LOG.warn("IO-err. Failed to read JSON", e);
 			throw new RuntimeException(e);
-
 		} catch (RuntimeException re) {
 			LOG.warn("RTE-err. Failed to read JSON", re);
 			throw re;
@@ -151,17 +125,14 @@ public class ProductCompositeIntegration {
 	private List<Review> response2Reviews(ResponseEntity<String> response) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			List list = mapper.readValue(response.getBody(), new TypeReference<List<Review>>() {});
-			List<Review> reviews = list;
-			return reviews;
-
+			return mapper.readValue(response.getBody(), new TypeReference<List<Review>>() {});
 		} catch (IOException e) {
 			LOG.warn("IO-err. Failed to read JSON", e);
 			throw new RuntimeException(e);
-
 		} catch (RuntimeException re) {
 			LOG.warn("RTE-err. Failed to read JSON", re);
 			throw re;
 		}
 	}
 }
+
