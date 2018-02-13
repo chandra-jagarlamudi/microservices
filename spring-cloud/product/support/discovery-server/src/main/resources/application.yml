@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: eureka-server
+
+server:
+    port: ${PORT:8761}
+    
+security:
+  user:
+    password: ${eureka.password} 
+
+eureka:
+  server:
+    enable-self-preservation: false
+  instance:
+    hostname: localhost
+    preferIpAddress: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: true 
+    serviceUrl:
+      defaultZone: http://user:${eureka.password:${SECURITY_USER_PASSWORD:password}}@${eureka.instance.hostname}:${server.port}/eureka/
+        
+logging:
+  level:  
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
