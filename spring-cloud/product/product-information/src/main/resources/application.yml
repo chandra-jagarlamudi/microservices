@@ -1,0 +1,27 @@
+server:
+  port: 0
+  
+eureka:
+  instance:
+    app-group-name: product-info-api
+    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+    home-page-url-path: http://${spring.application.instance_id:${random.value}}/
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    initialInstanceInfoReplicationIntervalSeconds: 30
+    instanceInfoReplicationIntervalSeconds: 20
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      healthcheck:
+        enabled: true
+      instance:
+        preferIpAddress: true
+        leaseRenewalIntervalInSeconds: 10
+        leaseExpirationDurationInSeconds: 30
+
+#ribbon: eureka: enabled: true
+    
+logging:
+  level:
+    com.ragas.microservice: DEBUG

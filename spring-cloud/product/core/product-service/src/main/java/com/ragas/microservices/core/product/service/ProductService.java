@@ -15,6 +15,6 @@ import com.ragas.microservices.core.product.model.Product;
 public class ProductService {
 	
 	public Product getProduct(Long productId) {
-		return new Product(productId, "Product Name","Product - Description");	
+		return new Product(productId, "Product - Name","Product - Description");	
 	}
 }
