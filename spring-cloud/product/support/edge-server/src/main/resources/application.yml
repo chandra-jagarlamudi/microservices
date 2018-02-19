@@ -1,5 +1,5 @@
 info:
-  component: Edge Server
+  component: Zuul Server
   
 server:
   port: 8765
@@ -21,20 +21,17 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 
-#If your Zuul server is also EurekaClient (use @EnableDiscoveryClient annotation) it will discover all the services and automatically will create routes.
-#Ex. Zuul server is zuul.mydomain.com Eureka has 2 services registered with it : orders and accounts
-#Then Zuul will automatically have two routes Zuul.mydomain.com/orders and Zuul.mydomain.com/accounts
-#And this will forward to particular service. It will also automatically load balance calls for you if services run on multiple machines.
-
 zuul:
-  ignored-patterns: "*"
+  ignored-services: "*"
   routes:
-    product-information: /product-information/**
-   
-ribbon:
-  eureka:
-    enabled: true  
-     
+    product-information-ribbon: 
+      path: /ribbon-resttemplate/**
+      service-id: product-information
+      strip-prefix: false
+    product-information-feign: 
+      path: /feign-hystrix/**
+      service-id: product-information
+      strip-prefix: false
 
 logging:
   level:

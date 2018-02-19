@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 
-import com.ragas.microservices.support.edge.filter.pre.ProductPreFilter;
+import com.ragas.microservices.support.edge.filter.pre.ZuulLoggingFilter;
 
 @EnableZuulProxy
 @SpringBootApplication
@@ -16,7 +16,7 @@ public class EdgeServer {
 	}
 	
 	@Bean
-	  public ProductPreFilter productPreFilter() {
-	    return new ProductPreFilter();
+	  public ZuulLoggingFilter productPreFilter() {
+	    return new ZuulLoggingFilter();
 	  }
 }
