@@ -40,6 +40,15 @@ public class ProductInformationController {
 				+ env.getProperty("local.server.port") + "\"}";
 	}
 
+	@GetMapping("/ribbon-resttemplate")
+	public String getProductInformationStringThroughRibbon() {
+		log.info("Product Information API - Serving product details using Ribbon and Rest Template on port:{}",
+				env.getProperty("local.server.port"));
+		return "{\"timestamp\":\"" + new Date()
+				+ "\",\"content\":\"Product Information using Ribbon and Rest Template\",\"port\":\""
+				+ env.getProperty("local.server.port") + "\"}";
+	}
+
 	@GetMapping("/ribbon-resttemplate/products/{productId}")
 	public ResponseEntity<ProductDetails> getProductInformationThroughRibbon(@PathVariable Long productId) {
 		log.info("Product Information API - Serving product details using Ribbon and Rest Template on port:{}",
@@ -47,9 +56,18 @@ public class ProductInformationController {
 		return productInformationService.getProductInformation(productId);
 	}
 
+	@GetMapping("/feign-hystrix")
+	public String getProductInformationStringThroughFeign() {
+		log.info("Product Information API - Serving product details using Feign and Hystrix on port:{}",
+				env.getProperty("local.server.port"));
+		return "{\"timestamp\":\"" + new Date()
+				+ "\",\"content\":\"Product Information using Feign and Hystrix\",\"port\":\""
+				+ env.getProperty("local.server.port") + "\"}";
+	}
+
 	@GetMapping("/feign-hystrix/products/{productId}")
 	public ResponseEntity<ProductDetails> getProductInformationThroughFeign(@PathVariable Long productId) {
-		log.info("Product Information API - Serving product details using Feign and Hystrix on port:{}", productId,
+		log.info("Product Information API - Serving product details using Feign and Hystrix on port:{}",
 				env.getProperty("local.server.port"));
 		return productInformationService.getProductInformation(productId);
 	}

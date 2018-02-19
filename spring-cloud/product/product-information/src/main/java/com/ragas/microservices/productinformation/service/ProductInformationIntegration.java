@@ -11,6 +11,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -54,7 +55,7 @@ public class ProductInformationIntegration {
 			
 			return serviceUtil.createOkResponse(product);
 		}catch (Exception e) {
-			LOG.error("Error calling getRecommendations: {}", e);
+			LOG.error("Error calling getProduct: {}", e.getMessage());
 			return serviceUtil.createOkResponse(new Product());
 		}
 		
@@ -77,9 +78,9 @@ public class ProductInformationIntegration {
 			LOG.debug("GetRecommendations.cnt {}", recommendations.size());
 
 			return serviceUtil.createOkResponse(recommendations);
-		} catch (Exception e) {
-			LOG.error("Error calling getRecommendations: {}", e);
-			return serviceUtil.createOkResponse(new ArrayList<Recommendation>());
+		} catch (Throwable e) {
+			LOG.error("Error calling getRecommendations: {}", e.getMessage());
+			return serviceUtil.createResponse(new ArrayList<Recommendation>(), HttpStatus.SERVICE_UNAVAILABLE);
 		}
 	}
 
@@ -101,9 +102,9 @@ public class ProductInformationIntegration {
 			LOG.debug("GetReviews.cnt {}", reviews.size());
 
 			return serviceUtil.createOkResponse(reviews);
-		} catch (Exception e) {
-			LOG.error("Error calling getReviewss: {}", e);
-			return serviceUtil.createOkResponse(new ArrayList<Review>());
+		} catch (Throwable e) {
+			LOG.error("Error calling getReviews: {}", e.getMessage());
+			return serviceUtil.createResponse(new ArrayList<Review>(), HttpStatus.SERVICE_UNAVAILABLE);
 		}
 
 	}

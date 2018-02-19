@@ -49,12 +49,12 @@ public class ProductInformationService {
 			LOG.debug("Calling Recommendation-Service to get recommendations for productID: {}", productId);
 			ResponseEntity<List<Recommendation>> productRecommendations = productInformationIntegration
 					.getRecommendations(productId);
-			if (!productRecommendations.getStatusCode().is2xxSuccessful()) {
+			if (productRecommendations.getStatusCode().is2xxSuccessful()) {
+				recommendations = productRecommendations.getBody();
+			} else {
 				// Something went wrong with getRecommendations, simply skip the
 				// recommendation-information in the response
 				LOG.debug("Call to getRecommendations failed: {}", productRecommendations.getStatusCode());
-			} else {
-				recommendations = productRecommendations.getBody();
 			}
 		} catch (Exception e) {
 			LOG.error("Call to getRecommendations failed: {}", e);
@@ -65,12 +65,12 @@ public class ProductInformationService {
 		try {
 			LOG.debug("Calling Review-Service to get reviews for productID: {}", productId);
 			ResponseEntity<List<Review>> productReviews = productInformationIntegration.getReviews(productId);
-			if (!productReviews.getStatusCode().is2xxSuccessful()) {
+			if (productReviews.getStatusCode().is2xxSuccessful()) {
+				reviews = productReviews.getBody();
+			} else {
 				// Something went wrong with getReviews, simply skip the review-information in
 				// the response
 				LOG.debug("Call to getReviews failed: {}", productReviews.getStatusCode());
-			} else {
-				reviews = productReviews.getBody();
 			}
 		} catch (Exception e) {
 			LOG.error("Call to getReviews failed: {}", e);
