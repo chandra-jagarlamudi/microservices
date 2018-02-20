@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.ragas.microservices.core.product.model.Product;
 import com.ragas.microservices.core.recommendation.model.Recommendation;
 import com.ragas.microservices.core.review.model.Review;
@@ -39,6 +39,7 @@ public class ProductInformationIntegration {
 	RestTemplate restTemplate = new RestTemplate();
 
 	// PRODUCTS //
+	@HystrixCommand(fallbackMethod = "defaultProduct")
 	public ResponseEntity<Product> getProduct(Long productId) {
 		try {
 			LOG.info("Getting Product...");
@@ -52,16 +53,28 @@ public class ProductInformationIntegration {
 
 			Product product = response2Product(resultStr);
 			LOG.debug("GetProduct.id: {}", product.getProductId());
-			
+
 			return serviceUtil.createOkResponse(product);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			LOG.error("Error calling getProduct: {}", e.getMessage());
 			return serviceUtil.createOkResponse(new Product());
 		}
-		
+
+	}
+
+	/**
+	 * Fallback method for getProduct()
+	 *
+	 * @param productId
+	 * @return
+	 */
+	public ResponseEntity<Product> defaultProduct(Long productId) {
+		LOG.warn("Using fallback method for product-service");
+		return serviceUtil.createResponse(null, HttpStatus.BAD_GATEWAY);
 	}
 
 	// RECOMMENDATIONS //
+	@HystrixCommand(fallbackMethod = "defaultRecommendations")
 	public ResponseEntity<List<Recommendation>> getRecommendations(Long productId) {
 		try {
 			LOG.info("Getting Recommendations...");
@@ -84,7 +97,19 @@ public class ProductInformationIntegration {
 		}
 	}
 
+	/**
+	 * Fallback method for getRecommendations()
+	 *
+	 * @param productId
+	 * @return
+	 */
+	public ResponseEntity<List<Recommendation>> defaultRecommendations(Long productId) {
+		LOG.warn("Using fallback method for recommendation-service");
+		return serviceUtil.createResponse(null, HttpStatus.BAD_GATEWAY);
+	}
+
 	// REVIEWS //
+	@HystrixCommand(fallbackMethod = "defaultReviews")
 	public ResponseEntity<List<Review>> getReviews(Long productId) {
 		try {
 			LOG.info("Getting Reviews...");
@@ -106,53 +131,39 @@ public class ProductInformationIntegration {
 			LOG.error("Error calling getReviews: {}", e.getMessage());
 			return serviceUtil.createResponse(new ArrayList<Review>(), HttpStatus.SERVICE_UNAVAILABLE);
 		}
+	}
 
+	/**
+	 * Fallback method for getReviews()
+	 *
+	 * @param productId
+	 * @return
+	 */
+	public ResponseEntity<List<Review>> defaultReviews(Long productId) {
+		LOG.warn("Using fallback method for review-service");
+		return serviceUtil.createResponse(null, HttpStatus.BAD_GATEWAY);
 	}
 
 	// UTILS //
-	private ObjectReader productReader = null;
-
-	private ObjectReader getProductReader() {
-
-		if (productReader != null)
-			return productReader;
-
-		ObjectMapper mapper = new ObjectMapper();
-		return productReader = mapper.reader(Product.class);
-	}
-
-	private ObjectReader reviewsReader = null;
-
-	private ObjectReader getReviewsReader() {
-		if (reviewsReader != null)
-			return reviewsReader;
-
-		ObjectMapper mapper = new ObjectMapper();
-		return reviewsReader = mapper.reader(new TypeReference<List<Review>>() {
-		});
-	}
-
-	public Product response2Product(ResponseEntity<String> response) {
+	private Product response2Product(ResponseEntity<String> response) {
 		try {
-			return getProductReader().readValue(response.getBody());
+			ObjectMapper mapper = new ObjectMapper();
+			return mapper.readValue(response.getBody(), Product.class);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	// TODO: Gereralize with <T> method, skip objectReader objects!
 	private List<Recommendation> response2Recommendations(ResponseEntity<String> response) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			List list = mapper.readValue(response.getBody(), new TypeReference<List<Recommendation>>() {
-			});
-			List<Recommendation> recommendations = list;
+			List<Recommendation> recommendations = mapper.readValue(response.getBody(),
+					new TypeReference<List<Recommendation>>() {
+					});
 			return recommendations;
-
 		} catch (IOException e) {
 			LOG.warn("IO-err. Failed to read JSON", e);
 			throw new RuntimeException(e);
-
 		} catch (RuntimeException re) {
 			LOG.warn("RTE-err. Failed to read JSON", re);
 			throw re;
@@ -162,15 +173,12 @@ public class ProductInformationIntegration {
 	private List<Review> response2Reviews(ResponseEntity<String> response) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			List list = mapper.readValue(response.getBody(), new TypeReference<List<Review>>() {
+			List<Review> reviews = mapper.readValue(response.getBody(), new TypeReference<List<Review>>() {
 			});
-			List<Review> reviews = list;
 			return reviews;
-
 		} catch (IOException e) {
 			LOG.warn("IO-err. Failed to read JSON", e);
 			throw new RuntimeException(e);
-
 		} catch (RuntimeException re) {
 			LOG.warn("RTE-err. Failed to read JSON", re);
 			throw re;
